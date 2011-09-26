@@ -14,6 +14,11 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More' => 0,
+	'DateTime'   => 0,
+	'DateTime::Format::ISO8601' => 0,
+	'Mouse'      => 0,
+	'Mouse::Util::TypeConstraints' => 0,
+	'Set::Object' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Games-Scoreboard-*' },

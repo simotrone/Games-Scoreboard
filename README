@@ -15,10 +15,13 @@ To install this module, run the following commands:
 
 DEPENDENCIES
 
-Mouse;
-Mouse::Util::TypeConstraints;
-DateTime;
-DateTime::Format::ISO8601;
+Mouse
+Mouse::Util::TypeConstraints
+
+DateTime
+DateTime::Format::ISO8601
+
+Set::Object
 
 
 
