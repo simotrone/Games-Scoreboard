@@ -57,3 +57,20 @@ This attribute allow manipulation as a DateTime object.
 
 You can set the C<datetime> attribute as DateTime object, epoch and
 ISO8601 string (see DateTime::Format::ISO8601).
+
+
+=head1 AUTHOR
+
+simotrone, C<< <simotrone at gmail.com> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2011 simotrone.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+
+=cut
