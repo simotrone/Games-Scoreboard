@@ -19,7 +19,7 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+Games::Scoreboard help to manage a full scoreboard, with player(s) and score(s).
 
 Perhaps a little code snippet.
 
