@@ -7,7 +7,7 @@ use Mouse;
 use Set::Object;
 use Games::Scoreboard::Player;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 has 'players' => (
 	isa => 'Set::Object', is => 'rw',
@@ -46,7 +46,7 @@ Games::Scoreboard - A Perl module to manage scoreboard, players and points.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 

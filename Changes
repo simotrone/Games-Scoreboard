@@ -1,5 +1,9 @@
 Revision history for Games-Scoreboard
 
+0.02	Mon Sep 26 23:52:40 CEST 2011
+	- Create Games::Scoreboard::Model::XML to load and save (from
+	and into XML file)
+
 0.01    Mon Sep 26 18:49:09 CEST 2011
         First version, released on an unsuspecting world.
 	- Create Games::Scoreboard packages (Scoreboard, Player, Score)
