@@ -1,9 +1,21 @@
+bin/scoreboard.pl
 Changes
+ignore.txt
 lib/Games/Scoreboard.pm
+lib/Games/Scoreboard/GUI/Curses.pm
+lib/Games/Scoreboard/Model/XML.pm
+lib/Games/Scoreboard/Player.pm
+lib/Games/Scoreboard/Score.pm
 Makefile.PL
 MANIFEST			This list of files
 README
 t/00-load.t
+t/01-score.t
+t/02-player.t
+t/03-player_score.t
+t/04-scoreboard.t
+t/05-sb_model_xml.t
+t/boilerplate.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t

@@ -1,7 +1,20 @@
-Games-Scoreboard
+GAMES-SCOREBOARD
 
-Perl project to manage and manipulate scoreboard, players and scores.
+Games::Scoreboard is a Perl project to manage and manipulate scoreboard,
+players and scores.
 
+Sometimes I play to something, and I need to register points by player,
+to have the top scorers, and sometimes I would like to have also an
+history of ranking.
+
+I wanted persistance and I implemented saving in (and loading from) XML
+file.
+I wanted "easy mode" to insert data and I created GUI (first Curses::UI
+to allow data entry by remote-terminal).
+
+It's my desire that all the project had a strong trend for the decoupling,
+so GUI(s) draws only, the XML model just read and write, etc. I hope this
+help to develop plugins and useful features.
 
 
 INSTALLATION
@@ -13,15 +26,30 @@ To install this module, run the following commands:
 	make test
 	make install
 
+
 DEPENDENCIES
 
-Mouse
-Mouse::Util::TypeConstraints
-
+Curses::UI
 DateTime
 DateTime::Format::ISO8601
-
+IO::File
+Mouse
+Mouse::Util::TypeConstraints
 Set::Object
+XML::Parser
+XML::Writer
+
+
+WHY MOUSE?
+(and not Moose or Moo or other OOP modules)
+
+I appreciate the idea to create constructor, accessors and OOP logic easily and
+fast.
+I don't prefer an OO module on the others: I choose Mouse because the game that
+start all this in my mind was about mices. ;-)
+
+If you interested to benchmark about OO you can read here:
+http://blogs.perl.org/users/michael_g_schwern/2011/03/and-the-fastest-oo-accessor-is.html
 
 
 
