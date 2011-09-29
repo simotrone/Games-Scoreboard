@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Curses::UI;
 use DateTime;
+use DateTime::Format::ISO8601;
 use Games::Scoreboard;
 use Carp;
 
@@ -372,7 +373,7 @@ sub add_to_scoreboard {
 	my ($self, $fields) = @_;
 	my $cui = $self->cui;
 
-	unless( $fields->{name} ) {	# il campo name deve essere riempito
+	if( !defined($fields->{name}) || $fields->{name} =~ m/^\s*$/ ) {	# mandatory field
 		$cui->error("The `name' field is mandatory!");
 		return undef;
 	}
