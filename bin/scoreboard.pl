@@ -7,6 +7,8 @@ use lib "$FindBin::Bin/../lib";
 use Games::Scoreboard::Model::XML;
 use Games::Scoreboard::GUI::Curses;
 
+our $VERSION = 0.01;
+
 use Getopt::Long;
 # Managing options
 my %options = (
@@ -25,7 +27,7 @@ GetOptions(
 # filename in $ARGV[0] take precedence on --file= option.
 my $filepath = $ARGV[0] || $options{filepath};
 unless( -e $filepath ) {
-	open(my $fh, '>', $filepath);
+	open(my $fh, '>', $filepath) || croak("Problem to write the $filepath default file.");
 	print $fh '<scoreboard></scoreboard>';
 	close($fh);
 }
@@ -47,7 +49,7 @@ exit(0);
 __END__
 =head1 NAME
 
-MouseHunt::Tracker - The great new MouseHunt::Tracker!
+scoreboard.pl
 
 =head1 VERSION
 
@@ -55,69 +57,72 @@ Version 0.01
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+scoreboard.pl is the script that run the gui on Games::Scoreboard.
 
-Perhaps a little code snippet.
+	$ scoreboard.pl
+	# GUI starts
+	
+	$ scoreboard.pl -a --nocolor data/myfavouritegame.xml
+	# launch GUI in ascii mode, no color, and getting data from file
+	# 'data/myfavouritegame.xml'
 
-    use MouseHunt::Tracker;
-
-    my $foo = MouseHunt::Tracker->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
+	# It's identical to:
+	$ scoreboard.pl -a --nocolor --file=data/myfavouritegame.xml
+	
 
 
-=head2 function2
+=head1 OPTIONS
+
+You can launch the script with following options.
+
+scoreboard.pl need a file where load and save data. You can pass the file name
+as script argument or with --file= option (see lower). @ARGV take precedence on
+option.
+
+If no file is provided, scoreboard.pl use generic filename `scoreboard.xml' in
+current directory. If the file doesn't exists, the script create it.
+
+=head2 --debug
+
+Is possibile enable debugging to track pressed keys or log errors.
+The logs go in debug.out file in local directory.
+
+Default is disabled.
+
+=head2 --ascii
+
+Usually you want your Curses widget drawed with fancy character. If you wantn't or
+need simple chars, you can set ascii option. (See Curses::UI -compat option.)
+
+Default is disabled.
+
+=head2 --color / --nocolor
+
+scoreboard.pl draw a colored GUI. If you want a white and black interface, throw
+away colors with --nocolor (you are setting Curses::UI -color_support option).
+
+Default is enable. (We want color!)
+
+=head2 --file='myscoreboard.xml'
+
+The script need a file to load data at start, and save data (if you want) when
+session end.
+It is possibile provide file as first command line argument ($ARGV[0]) or with this
+options.
+
+	$ scoreboard --file='file.xml'
+	# or...
+	$ scoreboard file.xml
+
+If a file isn't provided, the script auto-create a scoreboard.xml file in the local
+directory.
+
+Default is "scoreboard.xml".
 
 
 =head1 AUTHOR
 
 simotrone, C<< <simotrone at gmail.com> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-mousehunt-tracker at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=MouseHunt-Tracker>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc MouseHunt::Tracker
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=MouseHunt-Tracker>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/MouseHunt-Tracker>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/MouseHunt-Tracker>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/MouseHunt-Tracker/>
-
-=back
 
 
 =head1 ACKNOWLEDGEMENTS
