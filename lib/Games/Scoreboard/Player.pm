@@ -27,7 +27,7 @@ sub order_scores {
 
 	my @list;
 	given($attribute) {
-		when(/^datetime$/) { @list = sort { DateTime->compare( $b->datetime, $a->datetime ) } @unsorted_scores; } 
+		when(/^datetime$/) { @list = sort { DateTime->compare($b->datetime, $a->datetime) } @unsorted_scores; } 
 		default            { @list = sort { $b->$attribute <=> $a->$attribute } @unsorted_scores; }
 	}
 	@list = reverse(@list) if($ascending);
