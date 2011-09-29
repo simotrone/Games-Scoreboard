@@ -32,6 +32,9 @@ unless( -e $filepath ) {
 	close($fh);
 }
 
+if ($options{debug}) {
+	open(STDERR, '>', 'debug.out') || croak("Problems with debug.out");
+}
 
 # Managing data for GUI
 my $xml = Games::Scoreboard::Model::XML->new(filepath => $filepath);
