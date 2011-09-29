@@ -1,6 +1,5 @@
 bin/scoreboard.pl
 Changes
-ignore.txt
 lib/Games/Scoreboard.pm
 lib/Games/Scoreboard/GUI/Curses.pm
 lib/Games/Scoreboard/Model/XML.pm

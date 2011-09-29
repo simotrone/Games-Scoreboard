@@ -1,12 +1,13 @@
 \.old$
 \.bak$
 \.tmp$
-t/xml_scoreboard_test_.\.xml
+t/.*\.xml$
 \.git/
 \.gitignore
-data/
 ^MANIFEST\.
 ^Makefile$
 ^blib/
 ^pm_to_blib
 ^debug\.out$
+data/
+scoreboard.xml

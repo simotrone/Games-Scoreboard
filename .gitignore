@@ -9,8 +9,9 @@
 *.bak
 *.tmp
 debug.out
-t/xml_scoreboard_test_*.xml
-data/
+t/*.xml
 Makefile
 pm_to_blib
 blib/
+data/
+scoreboard.xml
