@@ -14,6 +14,7 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More' => 0,
+	'Carp'       => 0,
 	'Curses::UI' => 0,
 	'DateTime'   => 0,
 	'DateTime::Format::ISO8601' => 0,
