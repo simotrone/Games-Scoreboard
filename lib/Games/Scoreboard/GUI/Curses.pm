@@ -1,5 +1,6 @@
 package Games::Scoreboard::GUI::Curses;
 
+use 5.010;
 use strict;
 use warnings;
 use Curses::UI;
@@ -130,7 +131,7 @@ sub player_selected {
 	my ($selected_player) = $listbox->get();
 	my $sb = $self->cui->userdata();
 	unless($sb->players->size > 0) {
-		$self->status_warning('No player in list.',2);
+		$self->status_warning('No player in list.',1);
 		return;
 	}
 	my ($player_object) = grep { $_->name eq $selected_player } $sb->players->members;
@@ -267,7 +268,7 @@ sub form_window {
 			$win->add(
 				undef, 'Label',
 				-text => ucfirst($name),
-				-y    => $row
+				-y    => $row,
 			);
 			$win->add(
 				$name, 'TextEntry',
@@ -275,7 +276,13 @@ sub form_window {
 				-showlines => 1,
 				-x         => 9,
 				-y         => $row,
-				-width     => 20
+				-width     => 20,
+				-onchange  => sub { $self->field_warn($name, @_) },
+			);
+			$win->add(
+				"warn_$name", 'Label',
+				-y         => $row,
+				-x         => 30,
 			);
 			$row++;
 		}
@@ -303,12 +310,39 @@ sub form_window {
 	return $self->{form_window};
 }
 
+# Helper warning while you're digiting.
+sub field_warn {
+	my ($self,$name, $field) = @_;
+	my $warn  = $field->parent->getobj("warn_$name");
+	my $typed = $field->get();
+
+	given($name) {
+		when(/^name$/)          {
+			($typed =~ m/^\S.*$/)
+				? $warn->text('')
+				: $warn->text('A non-blank name is mandatory.');
+		}
+		when(/^(points|rank)$/) {
+			($typed =~ m/^\d*$/)
+				? $warn->text('')
+				: $warn->text('Only integer numbers allowed.');
+		}
+		when(/^datetime$/)      {
+			($typed =~ m/^((\d{1,2}-\d{1,2}-\d{4,4})\s?(\d{1,2}:\d{1,2})?)?$/)
+				? $warn->text('')
+				: $warn->text('Date in format dd-mm-yyyy HH:MM');
+		}
+	}
+	return;
+}
+
 sub cancel_form {
 	my ($self) = @_;
 	my $form = $self->form_window;
 	for (qw/name points datetime rank/) {
 		next unless($form->getobj($_));
 		$form->getobj($_)->text('');
+		$form->getobj("warn_$_")->text('');
 	}
 	$form->getobj('name')->focus();
 	return $self;
@@ -400,6 +434,7 @@ sub exit_dialog {
 sub debug_dialog {
 	my ($self,$data) = @_;
 	my $cui = $self->cui;
+	use Data::Dumper;
 	$cui->dialog(-message => Dumper($data));
 	return $self;
 }

@@ -1,5 +1,9 @@
 Revision history for Games-Scoreboard
 
+0.03	Thu Sep 29 22:59:49 CEST 2011
+	- Create Games::Scoreboard::GUI::Curses
+	- Create bin/scoreboard.pl script
+
 0.02	Mon Sep 26 23:52:40 CEST 2011
 	- Create Games::Scoreboard::Model::XML to load and save (from
 	and into XML file)
