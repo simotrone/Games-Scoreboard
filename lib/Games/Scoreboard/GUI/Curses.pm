@@ -266,6 +266,7 @@ sub form_window {
 		my $row = 1;
 		# Create Label + TextEntry per $player->attribute
 		foreach my $name (qw{name points datetime rank}) {
+			# TODO: think about calendar for datetime
 			$win->add(
 				undef, 'Label',
 				-text => ucfirst($name),
@@ -329,6 +330,7 @@ sub field_warn {
 				: $warn->text('Only integer numbers allowed.');
 		}
 		when(/^datetime$/)      {
+			TODO: need re-thinking
 			($typed =~ m/^((\d{1,2}-\d{1,2}-\d{4,4})\s?(\d{1,2}:\d{1,2})?)?$/)
 				? $warn->text('')
 				: $warn->text('Date in format dd-mm-yyyy HH:MM');
@@ -373,6 +375,7 @@ sub add_to_scoreboard {
 	my ($self, $fields) = @_;
 	my $cui = $self->cui;
 
+	# TODO: Trapping data insert
 	if( !defined($fields->{name}) || $fields->{name} =~ m/^\s*$/ ) {	# mandatory field
 		$cui->error("The `name' field is mandatory!");
 		return undef;
@@ -382,22 +385,23 @@ sub add_to_scoreboard {
 	my @already_in = grep { $_->name eq $fields->{name} } $sb->players->members;
 
 	my $player_obj;
-	if(@already_in > 0) {	# Se c'è già un record con quel nome prende il vecchio record...
+	if(@already_in > 0) {	# If record exists, take the old record...
 		$player_obj = shift @already_in;
 	} else {		# ...altrimenti crea uno nuovo.
 		$player_obj = Games::Scoreboard::Player->new( name => $fields->{name} );
 	}
 
 	my $dt;
-	if($fields->{datetime}) {	# se datetime era presente parsalo ...
-		my ($D,$M,$Y,$h,$m) = $fields->{datetime} =~ m/^(\d{1,2})-(\d{1,2})-(\d{4})\s(\d{1,2}):(\d{1,2})$/;
-		$dt = DateTime->new( year => $Y, month => $M, day => $D, hour => $h, minute => $m, time_zone => 'UTC' )
+	my $now = DateTime->now();
+	if($fields->{datetime}) {	# If datetime exists, it could need parsing...
+		my $iso8601 = DateTime::Format::ISO8601->new( base_datetime => $now );
+		$dt = $iso8601->parse_datetime($fields->{datetime});
 	}
 
 	my $score_obj = Games::Scoreboard::Score->new(
 		points   => $fields->{points} || 0,
 		rank     => $fields->{rank}   || 9999,
-		datetime => $dt               || DateTime->now(),
+		datetime => $dt               || $now,
 	);
 
 	$player_obj->add_score($score_obj);
