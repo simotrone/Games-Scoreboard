@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/../lib";
 use Games::Scoreboard::Model::XML;
 use Games::Scoreboard::GUI::Curses;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 use Getopt::Long;
 # Managing options
@@ -56,7 +56,7 @@ scoreboard.pl
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 
