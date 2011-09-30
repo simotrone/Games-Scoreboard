@@ -3,18 +3,18 @@ GAMES-SCOREBOARD
 Games::Scoreboard is a Perl project to manage and manipulate scoreboard,
 players and scores.
 
-Sometimes I play to something, and I need to register points by player,
-to have the top scorers, and sometimes I would like to have also an
-history of ranking.
+Sometimes I play something, and I need to register points by player, to have
+the top scorers, and sometimes I would like to have also an history of
+ranking.
 
-I wanted persistance and I implemented saving in (and loading from) XML
-file.
-I wanted "easy mode" to insert data and I created GUI (first Curses::UI
-to allow data entry by remote-terminal).
+I wanted persistance and I implemented the possibility to save in (and load
+from) XML data file.
+I wanted "easy mode" to insert data and I created GUI (first Curses::UI to
+allow data entry by remote-terminal).
 
-It's my desire that all the project had a strong trend for the decoupling,
-so GUI(s) draws only, the XML model just read and write, etc. I hope this
-help to develop plugins and useful features.
+It's my desire the whole project had a strong trend for the decoupling, so
+GUI(s) draws only, the XML model just reads and writes, and Games::Scoreboard
+lib map data. I hope this may help to develop plugins and useful features.
 
 
 INSTALLATION
@@ -43,12 +43,12 @@ XML::Writer
 WHY MOUSE?
 (and not Moose or Moo or other OOP modules)
 
-I appreciate the idea to create constructor, accessors and OOP logic easily and
-fast.
-I don't prefer an OO module on the others: I choose Mouse because the game that
-start all this in my mind was about mices. ;-)
+I appreciate the idea to create constructor, accessors and OOP logic easily
+and fast.
+I don't prefer an OO module on the others: I've choosen Mouse because the game
+has started all this in my mind was about mices. ;-)
 
-If you interested to benchmark about OO you can read here:
+If you are interested in benchmarks about OO you can read here:
 http://blogs.perl.org/users/michael_g_schwern/2011/03/and-the-fastest-oo-accessor-is.html
 
 
