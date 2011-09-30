@@ -391,18 +391,14 @@ sub add_to_scoreboard {
 		$player_obj = Games::Scoreboard::Player->new( name => $fields->{name} );
 	}
 
-	my $dt;
-	my $now = DateTime->now();
-	if($fields->{datetime}) {	# If datetime exists, it could need parsing...
-		my $iso8601 = DateTime::Format::ISO8601->new( base_datetime => $now );
-		$dt = $iso8601->parse_datetime($fields->{datetime});
-	}
+	my $score_obj = Games::Scoreboard::Score->new();
 
-	my $score_obj = Games::Scoreboard::Score->new(
-		points   => $fields->{points} || 0,
-		rank     => $fields->{rank}   || 9999,
-		datetime => $dt               || $now,
-	);
+	foreach my $attr (keys %$fields) {
+		# Run through the fields, take value and put if obj has setter.
+		if( (my $value = $fields->{$attr}) && $score_obj->can($attr) ) {
+			$score_obj->$attr($value);
+		}
+	}
 
 	$player_obj->add_score($score_obj);
 	$sb->add_player($player_obj);
