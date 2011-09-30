@@ -60,7 +60,7 @@ sub scoreboard {
 sub save_way {
 	my ($self, $save_way) = @_;
 	if($save_way) {
-		croak __PACKAGE__.'->save_way attribute must be a CODE ref indeed '.(ref $save_way) unless(ref $save_way eq 'CODE');
+		croak(__PACKAGE__.'->save_way attribute must be a CODE ref indeed '.(ref $save_way)) unless(ref $save_way eq 'CODE');
 		$self->{save_way} = $save_way;
 	}
 	return $self->{save_way};
@@ -79,7 +79,6 @@ sub gui_setup {
 	my $sb_window   = $self->scoreboard_window;
 	my $form_window = $self->form_window;
 	$self->players_list();
-#	$cui->add_callback('reload_list', sub { $self->players_list() } );
 
 	# Key bindings
 	$cui->set_binding( sub { $menu_widget->focus() },    "\cX" );
@@ -238,8 +237,6 @@ sub scoreboard_window {
 			-bfg       => 'red',
 			-y         => 1,
 			-padbottom => 10,
-#			-onFocus   => sub { $cui->delete_callback('reload_list'); },
-#			-onBlur    => sub { $cui->add_callback('reload_list', sub { $self->players_list() } ) },
 		);
 
 		$self->{scoreboard_window} = $win;
@@ -315,7 +312,7 @@ sub form_window {
 # Helper warning while you're digiting.
 sub field_warn {
 	my ($self,$name, $field) = @_;
-	my $warn  = $field->parent->getobj("warn_$name");
+	my $warn  = $self->form_window->getobj("warn_$name");
 	my $typed = $field->get();
 
 	given($name) {
