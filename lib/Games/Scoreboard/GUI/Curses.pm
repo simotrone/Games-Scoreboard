@@ -330,7 +330,7 @@ sub field_warn {
 				: $warn->text('Only integer numbers allowed.');
 		}
 		when(/^datetime$/)      {
-			TODO: need re-thinking
+			# TODO: need re-thinking
 			($typed =~ m/^((\d{1,2}-\d{1,2}-\d{4,4})\s?(\d{1,2}:\d{1,2})?)?$/)
 				? $warn->text('')
 				: $warn->text('Date in format dd-mm-yyyy HH:MM');
