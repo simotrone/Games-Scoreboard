@@ -372,7 +372,6 @@ sub add_to_scoreboard {
 	my ($self, $fields) = @_;
 	my $cui = $self->cui;
 
-	# TODO: Trapping data insert
 	if( !defined($fields->{name}) || $fields->{name} =~ m/^\s*$/ ) {	# mandatory field
 		$cui->error("The `name' field is mandatory!");
 		return undef;
@@ -381,13 +380,11 @@ sub add_to_scoreboard {
 
 	my @already_in = grep { $_->name eq $fields->{name} } $sb->players->members;
 
-	my $player_obj;
-	if(@already_in > 0) {	# If record exists, take the old record...
-		$player_obj = shift @already_in;
-	} else {		# ...altrimenti crea uno nuovo.
-		$player_obj = Games::Scoreboard::Player->new( name => $fields->{name} );
-	}
-
+	# If record exists, take the old record else create new.
+	my $player_obj = (@already_in > 0)
+		? shift(@already_in)
+		: Games::Scoreboard::Player->new(name => $fields->{name});
+	
 	my $score_obj = Games::Scoreboard::Score->new();
 
 	foreach my $attr (keys %$fields) {
