@@ -259,90 +259,188 @@ sub form_window {
 			-y      => -1,
 			-height => 10,
 		);
-
-		my $row = 1;
-		# Create Label + TextEntry per $player->attribute
-		foreach my $name (qw{name points datetime rank}) {
-			# TODO: think about calendar for datetime
-			$win->add(
-				undef, 'Label',
-				-text => ucfirst($name),
-				-y    => $row,
-			);
-			$win->add(
-				$name, 'TextEntry',
-				-sbborder  => 1,
-				-showlines => 1,
-				-x         => 9,
-				-y         => $row,
-				-width     => 20,
-				-onchange  => sub { $self->field_warn($name, @_) },
-			);
-			$win->add(
-				"warn_$name", 'Label',
-				-y         => $row,
-				-x         => 30,
-			);
-			$row++;
-		}
-
-		$win->add(
-			undef, 'Buttonbox',
-			-y       => $row+1,
-			-x       => 2,
-			-buttons => [
-				{
-					-label   => '< Submit >',
-					-value   => 'submit',
-					-onpress => sub {$self->submit_form(@_)}
-				},
-				{
-					-label   => '< Cancel >',
-					-value   => 'cancel',
-					-onpress => sub {$self->cancel_form(@_)}
-				},
-			],
-		);
+		$self->form_fields($win);
 
 		$self->{form_window} = $win;
 	}
 	return $self->{form_window};
 }
 
+sub form_fields {
+	my ($self,$form_window) = @_;
+
+	my $row = 1;
+	my %field_opts = (
+		-sbborder  => 1,
+		-showlines => 1,
+		-width     => 20,
+		-x         => 9,
+	);
+	# Create Label + TextEntry per $player->attribute
+	foreach my $name (qw{name points rank}) {
+		# TODO: think about calendar for datetime
+		$form_window->add(
+			"label_$name", 'Label',
+			-text => ucfirst($name),
+			-y    => $row,
+		);
+		$form_window->add(
+			$name, 'TextEntry', %field_opts,
+			-y         => $row,
+			-onchange  => sub { $self->field_warn($name, @_) },
+		);
+		$form_window->add(
+			"warn_$name", 'Label',
+			-y         => $row++,
+			-x         => 30,
+		);
+	}
+
+	# begin datetime field
+	$form_window->add('label_datetime', 'Label', -text => 'Datetime', -y => $row);
+
+	my $x = 9;
+	$form_window->add(undef, 'Label', -text => '[', -y => $row, -x => $x++);
+	foreach my $f (qw/dd mm yyyy/) {
+		my $ln = length($f);
+		$form_window->add(
+			"datetime_$f", 'TextEntry', %field_opts,
+			-y         => $row,
+			-x         => $x,
+			-width     => $ln,
+			-maxlength => $ln,
+			-sbborder  => 0,
+			-showoverflow => 0,
+#			-onchange  => sub {
+#				my $field = shift;
+#				( $self->field_warn("datetime_$f",$field) && $form_window->focus_next() )
+#					if(length($field->get()) == $ln);
+#			},
+			# focus_next() is implemented in Curses::UI::Container.
+		);
+		$x += $ln;
+		last if($f =~ m/yyyy/);
+		$form_window->add(undef, 'Label', -text => '-', -y => $row, -x => $x++);
+	}
+	$form_window->add(undef, 'Label', -text => ']', -y => $row, -x => $x++);
+
+	$form_window->add(
+		'calendar_button', 'Buttonbox',
+		-y => $row,
+		-x => $x,
+		-width => 1,
+		-buttons => [
+			{
+				-label => 'c',
+				-value => 1,
+				-onpress => sub{
+					my $date = $self->cui->calendardialog();
+					return unless defined $date;
+					my($yy,$mm,$dd) = split('-',$date);
+					$form_window->getobj('datetime_dd')->text($dd);
+					$form_window->getobj('datetime_mm')->text($mm);
+					$form_window->getobj('datetime_yyyy')->text($yy);
+				},
+			}
+		],
+	);
+	$x++;
+
+	$form_window->add(undef, 'Label', -text => '[', -y => $row, -x => $x++);
+	foreach my $f (qw/HH MM/) {
+		my $ln = length($f);
+		$form_window->add(
+			"datetime_$f", 'TextEntry', %field_opts,
+			-y         => $row,
+			-x         => $x,
+			-width     => $ln,
+			-maxlength => $ln,
+			-sbborder  => 0,
+			-showoverflow => 0,
+#			-onchange  => sub {
+#				my $field = shift;
+#				( $self->field_warn("datetime_$f",$field) && $form_window->focus_next() )
+#					if(length($field->get()) == $ln);
+#			},
+			# focus_next() is implemented in Curses::UI::Container.
+		);
+		$x += $ln;
+		last if($f =~ m/MM/);
+		$form_window->add(undef, 'Label', -text => ':', -y => $row, -x => $x++);
+	}
+	$form_window->add(undef, 'Label', -text => ']', -y => $row, -x => $x);
+
+	# end datetime field
+
+	$form_window->add(
+		undef, 'Buttonbox',
+		-y       => $row+1,
+		-x       => 2,
+		-buttons => [
+			{
+				-label   => '< Submit >',
+				-value   => 'submit',
+				-onpress => sub {$self->submit_form(@_)}
+			},
+			{
+				-label   => '< Cancel >',
+				-value   => 'cancel',
+				-onpress => sub {$self->cancel_form(@_)}
+			},
+		],
+	);
+
+	return $form_window;
+}
+
 # Helper warning while you're digiting.
 sub field_warn {
 	my ($self,$name, $field) = @_;
-	my $warn  = $self->form_window->getobj("warn_$name");
+
+	my $form  = $self->form_window;
+	my $warn  = $form->getobj("warn_$name");
 	my $typed = $field->get();
 
+	my $flag = 0;
+
+	# Set warning text
 	given($name) {
 		when(/^name$/)          {
 			($typed =~ m/^\S.*$/)
-				? $warn->text('')
+				? $warn->text('') && ($flag = 1)
 				: $warn->text('A non-blank name is mandatory.');
 		}
 		when(/^(points|rank)$/) {
 			($typed =~ m/^\d*$/)
-				? $warn->text('')
+				? $warn->text('') && ($flag = 1)
 				: $warn->text('Only integer numbers allowed.');
 		}
-		when(/^datetime$/)      {
-			# TODO: need re-thinking
-			($typed =~ m/^((\d{1,2}-\d{1,2}-\d{4,4})\s?(\d{1,2}:\d{1,2})?)?$/)
-				? $warn->text('')
-				: $warn->text('Date in format dd-mm-yyyy HH:MM');
-		}
+# interesting but useless
+#		when(/^datetime_(.+)$/) {
+#			given($1) {
+#				when(/dd/) { $flag = ($typed >= 1 and $typed <= 31) ? 1 : 0; }
+#				when(/mm/) { $flag = ($typed >= 1 and $typed <= 12) ? 1 : 0; }
+#				when(/HH/) { $flag = ($typed >= 0 and $typed <= 24) ? 1 : 0; }
+#				when(/MM/) { $flag = ($typed >= 0 and $typed <= 60) ? 1 : 0; }
+#			}
+#		}
 	}
-	return;
+
+	$name =~ s/(datetime).+/$1/;
+	# Set warning alarm color
+	my $label = $form->getobj("label_$name");
+	$flag ? $label->set_color_fg('green') : $label->set_color_fg('red') ;
+
+	return $flag;
 }
 
 sub cancel_form {
 	my ($self) = @_;
 	my $form = $self->form_window;
-	for (qw/name points datetime rank/) {
-		next unless($form->getobj($_));
-		$form->getobj($_)->text('');
-		$form->getobj("warn_$_")->text('');
+	for (qw/name points rank/, map{"datetime_$_"}(qw/dd mm yyyy HH MM/) ) {
+		$form->getobj($_)->text('')        if($form->getobj($_));
+		$form->getobj("warn_$_")->text('') if($form->getobj("warn_$_"));
+		$form->getobj("label_$_")->set_color_fg('white') if($form->getobj("label_$_"));
 	}
 	$form->getobj('name')->focus();
 	return $self;
@@ -352,7 +450,7 @@ sub submit_form {
 	my ($self) = @_;
 	my $form = $self->form_window;
 	my $values = {};
-	for (qw/name points datetime rank/) {
+	for (qw/name points rank/, map{"datetime_$_"}(qw/dd mm yyyy HH MM/) ) {
 		# if $attr->TextEntry exists get value else undef
 		$values->{$_} = $form->getobj($_) ? $form->getobj($_)->get() : undef;
 	}
@@ -390,15 +488,22 @@ sub add_to_scoreboard {
 	foreach my $attr (keys %$fields) {
 		# Run through the fields, take value and put if obj has setter.
 		if( (my $value = $fields->{$attr}) && $score_obj->can($attr) ) {
-			$score_obj->$attr($value);
+			eval { $score_obj->$attr($value) };
+			if($@) { $self->status_warning($@,2); return undef }
 		}
+	}
+
+	foreach (['year','yyyy'],['day','dd'],['month','mm'],['hour','HH'],['minute','MM']) {
+		my $set = "set_".$_->[0];	# DateTime setter
+		my $key = "datetime_".$_->[1];	# field key name
+		eval { $score_obj->datetime->$set($fields->{$key}) } if($fields->{$key});
+		if($@) { $self->status_warning($@,2); return undef }
 	}
 
 	$player_obj->add_score($score_obj);
 	$sb->add_player($player_obj);
 	return 1;
 }
-
 
 # $self->status_warning($message,$sec) 
 # Status popup with $message for $sec seconds (default 1)
