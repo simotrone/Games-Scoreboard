@@ -12,6 +12,7 @@ WriteMakefile(
       ? ('LICENSE'=> 'perl')
       : ()),
     PL_FILES            => {},
+    EXE_FILES => ['bin/scoreboard.pl'],
     PREREQ_PM => {
         'Test::More' => 0,
 	'Carp'       => 0,
