@@ -426,7 +426,9 @@ sub field_warn {
 #		}
 	}
 
+	# Filter datetime_* fields for following getobj method.
 	$name =~ s/(datetime).+/$1/;
+
 	# Set warning alarm color
 	my $label = $form->getobj("label_$name");
 	$flag ? $label->set_color_fg('green') : $label->set_color_fg('red') ;
